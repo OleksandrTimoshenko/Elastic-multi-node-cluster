@@ -1,4 +1,5 @@
 Vagrant.configure("2") do |config|
+  num_workers = 3
 
   # Master node
   config.vm.define "elasticsearch-master" do |master|
@@ -9,21 +10,18 @@ Vagrant.configure("2") do |config|
       vb.memory = "2048"
       vb.cpus = 2
     end
-    master.vm.provision "file", source: "./scripts/install_elastic.sh", destination: "/home/vagrant/install_elastic.sh"
-    master.vm.provision "shell", inline: "bash /home/vagrant/install_elastic.sh"
   end
 
-  # Worker node
-  config.vm.define "elasticsearch-worker" do |worker|
-    worker.vm.box = "bento/ubuntu-22.04"
-    worker.vm.hostname = "elasticsearch-worker"
-    worker.vm.network "private_network", ip: "192.168.56.12"
-    worker.vm.provider "virtualbox" do |vb|
-      vb.memory = "2048"
-      vb.cpus = 2
+  # Worker nodes loop
+  (1..num_workers).each do |i|
+    config.vm.define "elasticsearch-worker-#{i}" do |worker|
+      worker.vm.box = "bento/ubuntu-22.04"
+      worker.vm.hostname = "elasticsearch-worker-#{i}"
+      worker.vm.network "private_network", ip: "192.168.56.1#{i+1}"
+      worker.vm.provider "virtualbox" do |vb|
+        vb.memory = "2048"
+        vb.cpus = 2
+      end
     end
-    worker.vm.provision "file", source: "./scripts/install_elastic.sh", destination: "/home/vagrant/install_elastic.sh"
-    worker.vm.provision "shell", inline: "bash /home/vagrant/install_elastic.sh"
   end
-
 end
