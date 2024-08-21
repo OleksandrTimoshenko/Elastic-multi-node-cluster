@@ -1,4 +1,4 @@
-- name: server
+- name: Install Elastic
   hosts: all
   become: True
   gather_facts: false
@@ -6,39 +6,25 @@
   pre_tasks:
     - name: Wait for system to become reachable
       wait_for_connection:
+  
+  roles:
+    - install_elastic
 
+- name: configure master node
+  hosts: master
+  become: true
+  gather_facts: false
+
+  roles:
+    - generate_enrollment_token
   tasks:
-    - name: Update APT package index
-      apt:
-        update_cache: yes
+    - name: Print Elasticsearch enrollment token
+      debug:
+        msg: "Elasticsearch enrollment token is {{ elasticsearch_enrollment_token }}"
 
-    - name: Install required dependencies for Elasticsearch
-      apt:
-        name: apt-transport-https
-        state: present
+# TODO:
 
-    - name: Creating apt file for set elasticsearch version
-      ansible.builtin.file:
-        state: touch
-        path: /etc/apt/sources.list.d/elastic-8.x.list
-        access_time: preserve
-        modification_time: preserve
+#- name: Copy configs to server  # use hostname to copy correct config to correct server
+#  hosts: all
 
-    - name: Add an Apt signing key, uses whichever key is at the URL
-      ansible.builtin.apt_key:
-        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-        state: present
-
-    - name: Set elasticsearch version 8 to apt repository list
-      lineinfile:
-        path: /etc/apt/sources.list.d/elastic-8.x.list
-        line: "deb https://artifacts.elastic.co/packages/8.x/apt stable main"
-
-    - name: Update APT package index after adding the Elasticsearch repository
-      apt:
-        update_cache: yes
-
-    - name: Install APT packeges
-      apt:
-        name: 
-          - elasticsearch
+#- name: handler for restat elastic

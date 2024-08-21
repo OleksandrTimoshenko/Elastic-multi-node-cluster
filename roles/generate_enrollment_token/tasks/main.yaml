@@ -1,0 +1,9 @@
+---
+- name: Create Elasticsearch enrollment token
+  command: /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node
+  register: enrollment_token_output
+  changed_when: false
+
+- name: Set Elasticsearch enrollment token fact
+  set_fact:
+    elasticsearch_enrollment_token: "{{ enrollment_token_output.stdout }}"
