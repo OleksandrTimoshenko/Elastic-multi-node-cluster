@@ -1,5 +1,7 @@
 import subprocess
 import yaml
+import os
+from jinja2 import Environment, FileSystemLoader
 
 def get_vagrant_vms():
     result = subprocess.run(['vagrant', 'status'], capture_output=True, text=True)
@@ -12,9 +14,6 @@ def get_vagrant_vms():
             vm_ip = subprocess.run(['vagrant', 'ssh', vm_name, "--", "-t", "ip address show eth1 | grep 'inet ' | sed -e 's/^.*inet //' -e 's/\/.*$//'"], capture_output=True, text=True)
             vms[vm_name] = vm_ip.stdout[:-1]
     return vms
-
-import subprocess
-import yaml
 
 def get_ssh_config(machine_name):
     result = subprocess.run(['vagrant', 'ssh-config', machine_name], capture_output=True, text=True)
@@ -52,6 +51,47 @@ def generate_inventory(machines):
 
     print("inventory.yaml has been generated successfully!")
 
+def generate_elasticsearch_configs(hosts):
+    # Путь к шаблону
+    template_path = './configs/templates/elasticsearch.yml.j2'
+    
+    # Создание среды Jinja2
+    env = Environment(loader=FileSystemLoader(os.path.dirname(template_path)))
+    
+    # Загрузка шаблона
+    template = env.get_template(os.path.basename(template_path))
+    
+    # Папка для конфигурационных файлов
+    output_dir = './configs/elasticsearch'
+    os.system(f"rm -rf {output_dir}/*")
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Формируем группы для шаблона
+    groups = {
+        'elasticsearch': [{'host': host, 'ip': ip} for host, ip in hosts.items()],
+        'elasticsearch_master': [hosts.get('elasticsearch-master')],
+        'elasticsearch_workers': [hosts.get(f'elasticsearch-worker-{i}') for i in range(1, len(hosts) - 1)]
+    }
+    
+    # Создание конфигурационных файлов
+    for host, ip in hosts.items():
+        config = template.render(
+            ansible_hostname=host,
+            ansible_eth1={'ipv4': {'address': ip}},
+            groups=groups
+        )
+        
+        filename = f'{host}.yaml'
+        
+        file_path = os.path.join(output_dir, filename)
+        
+        # Запись конфигурации в файл
+        with open(file_path, 'w') as f:
+            f.write(config)
+        
+        print(f'Конфигурационный файл {filename} успешно создан.')
+
 if __name__ == "__main__":
     machines = get_vagrant_vms()
     generate_inventory(machines)
+    generate_elasticsearch_configs(machines)
