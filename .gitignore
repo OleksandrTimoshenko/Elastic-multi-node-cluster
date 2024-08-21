@@ -1,3 +1,4 @@
 .vagrant
 legacy
 inventory.yaml
+/configs/elasticsearch/
