@@ -62,10 +62,10 @@ def generate_elasticsearch_configs(hosts):
     template = env.get_template(os.path.basename(template_path))
     
     # Папка для конфигурационных файлов
-    output_dir = './configs/elasticsearch'
-    os.system(f"rm -rf {output_dir}/*")
+    output_dir = './roles/copy_config_to_server/files/'
     os.makedirs(output_dir, exist_ok=True)
-    
+    os.system(f"rm -rf {output_dir}/*")
+
     # Формируем группы для шаблона
     groups = {
         'elasticsearch': [{'host': host, 'ip': ip} for host, ip in hosts.items()],
