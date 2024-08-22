@@ -1,4 +1,4 @@
 .vagrant
 legacy
 inventory.yaml
-/configs/elasticsearch/
+roles/copy_config_to_server/files

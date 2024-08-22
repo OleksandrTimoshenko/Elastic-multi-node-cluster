@@ -4,7 +4,7 @@
 `vagrant up`
 
 ## Create inventory file
-`python ./create_inventory.py`
+`python ./setup.py`
 
 ## Start ansible provisioning (playbook in progress)
 `ansible-playbook -i inventory.yaml playbook.yml`
@@ -19,12 +19,6 @@
 4. automate config`s creation for N worker nodes
 5. update ansoble config for (see script.sh):
     - prepare node for Elastic (see №3 here)
-    - copy config to master node
-    - start master node
-    - create new password for elastic
-    - create token for connecting to cluster
-    - copy config to worker node
-    - connect worker node to cluster using enrollment-token
-    - start worker node
 6. add env variable for vagrant VMs number in Vagrantfile
 7. add Kibana, Logstash and some log simulator....
+8. add requirements to project
