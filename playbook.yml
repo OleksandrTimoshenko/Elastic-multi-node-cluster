@@ -10,21 +10,42 @@
   roles:
     - install_elastic
 
-- name: configure master node
+- name: configure elasticsearch nodes
   hosts: master
   become: true
-  gather_facts: false
+  gather_facts: true
 
   roles:
-    - generate_enrollment_token
+    - copy_config_to_server
+
   tasks:
+    - name: Flush handlers after copy_config_to_server
+      meta: flush_handlers
+
+    - name: Other tasks after handler has run
+      debug:
+        msg: "Handlers have been triggered, proceeding with other tasks..."
+
+    - include_role:
+        name: update_elastic_password
+    - include_role:
+        name: generate_enrollment_token
+
     - name: Print Elasticsearch enrollment token
       debug:
         msg: "Elasticsearch enrollment token is {{ elasticsearch_enrollment_token }}"
 
-# TODO:
+    - name: Print Elasticsearch password
+      debug:
+        msg: "Elasticsearch password is: {{ elasticsearch_password }}"
 
-#- name: Copy configs to server  # use hostname to copy correct config to correct server
-#  hosts: all
+- name: configure workers
+  hosts: workers
+  become: true
+  gather_facts: true
 
-#- name: handler for restat elastic
+  roles:
+    - role: add_node_to_cluster
+    - role: copy_config_to_server
+
+# TODO: add test from master: curl -ku elastic:<pass> https://<ip>:9200/_cat/nodes
