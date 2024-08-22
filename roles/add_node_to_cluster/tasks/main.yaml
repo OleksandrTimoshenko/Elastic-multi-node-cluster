@@ -1,0 +1,4 @@
+---
+- name: Add node to elastic cluster
+  shell: |
+      yes | /usr/share/elasticsearch/bin/elasticsearch-reconfigure-node -s --enrollment-token {{ hostvars['elasticsearch-master']['elasticsearch_enrollment_token'] }}
