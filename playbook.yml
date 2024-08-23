@@ -27,6 +27,7 @@
         msg: "Handlers have been triggered, proceeding with other tasks..."
 
     - include_role:
+        # TODO:update pass in every run is not best idea....
         name: update_elastic_password
     - include_role:
         name: generate_enrollment_token
@@ -48,4 +49,10 @@
     - role: add_node_to_cluster
     - role: copy_config_to_server
 
-# TODO: add test from master: curl -ku elastic:<pass> https://<ip>:9200/_cat/nodes
+- name: get available nodes
+  hosts: master
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: get_available_nodes

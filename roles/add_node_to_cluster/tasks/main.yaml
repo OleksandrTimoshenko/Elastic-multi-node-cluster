@@ -1,4 +1,6 @@
 ---
-- name: Add node to elastic cluster
+  # TODO: how to do it beter?
+- name: Add node to elastic cluster (Ignore error, if it`s not first setup....)
   shell: |
       yes | /usr/share/elasticsearch/bin/elasticsearch-reconfigure-node -s --enrollment-token {{ hostvars['elasticsearch-master']['elasticsearch_enrollment_token'] }}
+  ignore_errors: true

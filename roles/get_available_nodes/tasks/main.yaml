@@ -1,0 +1,15 @@
+---
+- name: Check Elasticsearch node status
+  ansible.builtin.uri:
+    url: "https://{{ ansible_facts['eth1']['ipv4']['address']  }}:9200/_cat/nodes"
+    method: GET
+    return_content: true
+    user: "elastic"
+    password: "{{ elasticsearch_password }}"
+    validate_certs: no
+  register: result
+
+- name: Display the result of the request
+  debug:
+    # TODO: Format is not perfect
+    var: result.content
