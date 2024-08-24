@@ -1,5 +1,5 @@
 - name: Install Elastic
-  hosts: all
+  hosts: [master, workers]
   become: True
   gather_facts: false
 
@@ -8,7 +8,9 @@
       wait_for_connection:
   
   roles:
-    - install_elastic
+    - role:  install_software
+      vars:
+        component_to_install: elasticsearch
 
 - name: configure elasticsearch nodes
   hosts: master
@@ -56,3 +58,13 @@
 
   roles:
     - role: get_available_nodes
+
+- name: Install kibana
+  hosts: kibana
+  become: true
+  gather_facts: true
+
+  roles:
+    - role:  install_software
+      vars:
+        component_to_install: kibana

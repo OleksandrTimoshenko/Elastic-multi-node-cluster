@@ -3,12 +3,12 @@
     apt:
       update_cache: yes
 
-  - name: Install required dependencies for Elasticsearch
+  - name: Install required dependencies for {{ component_to_install }}
     apt:
       name: apt-transport-https
       state: present
 
-  - name: Creating apt file for set elasticsearch version
+  - name: Creating apt file for set {{ component_to_install }} version
     ansible.builtin.file:
       state: touch
       path: /etc/apt/sources.list.d/elastic-8.x.list
@@ -20,16 +20,16 @@
       url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
       state: present
 
-  - name: Set elasticsearch version 8 to apt repository list
+  - name: Set {{ component_to_install }} version 8 to apt repository list
     lineinfile:
       path: /etc/apt/sources.list.d/elastic-8.x.list
       line: "deb https://artifacts.elastic.co/packages/8.x/apt stable main"
 
-  - name: Update APT package index after adding the Elasticsearch repository
+  - name: Update APT package index after adding the {{ component_to_install }} repository
     apt:
       update_cache: yes
 
   - name: Install APT packeges
     apt:
       name: 
-        - elasticsearch
+        - "{{ component_to_install }}"

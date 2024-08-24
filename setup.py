@@ -32,6 +32,7 @@ def generate_inventory(machines):
         'all': {
             'hosts': {},
             'children': {
+                'kibana': {'hosts': {}},
                 'master': {'hosts': {}},
                 'workers': {'hosts': {}}
             }
@@ -42,6 +43,8 @@ def generate_inventory(machines):
         config = get_ssh_config(machine)
         if 'master' in machine:
             inventory['all']['children']['master']['hosts'][machine] = config
+        elif 'kibana' in machine:
+            inventory['all']['children']['kibana']['hosts'][machine] = config
         else:
             inventory['all']['children']['workers']['hosts'][machine] = config
 
@@ -75,21 +78,22 @@ def generate_elasticsearch_configs(hosts):
     
     # Создание конфигурационных файлов
     for host, ip in hosts.items():
-        config = template.render(
-            ansible_hostname=host,
-            ansible_eth1={'ipv4': {'address': ip}},
-            groups=groups
-        )
-        
-        filename = f'{host}.yaml'
-        
-        file_path = os.path.join(output_dir, filename)
-        
-        # Запись конфигурации в файл
-        with open(file_path, 'w') as f:
-            f.write(config)
-        
-        print(f'Конфигурационный файл {filename} успешно создан.')
+        if host != "kibana":
+            config = template.render(
+                ansible_hostname=host,
+                ansible_eth1={'ipv4': {'address': ip}},
+                groups=groups
+            )
+            
+            filename = f'{host}.yaml'
+            
+            file_path = os.path.join(output_dir, filename)
+            
+            # Запись конфигурации в файл
+            with open(file_path, 'w') as f:
+                f.write(config)
+            
+            print(f'Конфигурационный файл {filename} успешно создан.')
 
 if __name__ == "__main__":
     machines = get_vagrant_vms()
