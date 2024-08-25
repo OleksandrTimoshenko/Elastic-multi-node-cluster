@@ -1,0 +1,22 @@
+---
+
+- name: Add token to kibana keystore
+  shell: echo {{ hostvars['elasticsearch-master']['kibana_enrollment_token'] }} | /usr/share/kibana/bin/kibana-keystore add elasticsearch.serviceAccountToken -fx
+  notify: Reload systemd and enable/start Kibana service
+
+- name: Change ownership of /etc/kibana
+  ansible.builtin.file:
+    path: /etc/kibana
+    owner: kibana
+    group: kibana
+    recurse: yes
+  notify: Reload systemd and enable/start Kibana service
+
+- name: Copy Kibana config file based on hostname
+  ansible.builtin.copy:
+    src: "files/{{ ansible_hostname }}.yaml"
+    dest: /etc/kibana/kibana.yml
+    owner: kibana
+    group: kibana
+    mode: '0644'
+  notify: Reload systemd and enable/start Kibana service
