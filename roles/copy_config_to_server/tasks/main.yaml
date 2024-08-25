@@ -1,5 +1,4 @@
 ---
-# TODO: як перевірити, що файл дійсно змінився?
 - name: Copy Elasticsearch config file based on hostname
   ansible.builtin.copy:
     src: "files/{{ ansible_hostname }}.yaml"

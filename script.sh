@@ -30,21 +30,17 @@ sudo systemctl start elasticsearch.service
 curl -ku elastic:<pass> https://<ip>:9200/_cat/nodes
 
 
+# setup kibana
+# in elastic - generate kibana token
+curl -X POST -ku elastic:<pass> https://192.168.56.11:9200/_security/service/elastic/kibana/credential/token/kibana_token
 
+curl -X DELETE -ku elastic:dXCrxrKFMBIxX8xlZQd5 https://192.168.56.11:9200/_security/service/elastic/kibana/credential/token/kibana_token
+dXCrxrKFMBIxX8xlZQd5
 
-
-
-
-
-## legacy:
-# this is really interesting - https://discuss.elastic.co/t/elasticsearch-create-enrollment-token-using-ip-from-wrong-ethernet-adaptor/320999/3
-# тобто тут проблема
-# я роблю sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node
-# потім беру токет, роблю 
-encode = base64.b64decode("<token>")
-# і отримую токен, в якому стоїть неправильна IP (тобто не та, яку я поставив в )
-# b'{"ver":"8.14.0","adr":["10.0.2.15:9200"],.......
-# потім взяв цей вивід, поміняв у ньому IP і задекодив внову
-# text = b'{"ver":"8.14.0","adr":["192.168.56.11:9200"],.......
-# token = base64.b64encode(text)
-# і тільки потім .....
+# in kibana -
+1. nano /etc/kibana/kibana.yml
+2. /usr/share/kibana/bin/kibana-keystore add elasticsearch.serviceAccountToken
+    <set kibana token>
+3. cd /etc/kibana && chown -R kibana:kibana /etc/kibana
+4. далі треба буде погратися з сертифікатами... 
+5. але після запуску kibana працює....

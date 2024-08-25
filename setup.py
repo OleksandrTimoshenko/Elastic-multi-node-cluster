@@ -10,7 +10,7 @@ def get_vagrant_vms():
     for line in result.stdout.splitlines():
         if "running" in line:
             vm_name = line.split()[0]
-            # usually for private network vagrant use eth1 interface
+            # usually for private network vagrant uses eth1 interface
             vm_ip = subprocess.run(['vagrant', 'ssh', vm_name, "--", "-t", "ip address show eth1 | grep 'inet ' | sed -e 's/^.*inet //' -e 's/\/.*$//'"], capture_output=True, text=True)
             vms[vm_name] = vm_ip.stdout[:-1]
     return vms
@@ -48,14 +48,14 @@ def generate_inventory(machines):
         else:
             inventory['all']['children']['workers']['hosts'][machine] = config
 
-    # Записываем inventory.yaml
+    # Write inventory.yaml
     with open('inventory.yaml', 'w') as file:
         yaml.dump(inventory, file, default_flow_style=False)
 
     print("inventory.yaml has been generated successfully!")
 
 def generate_kibana_config(kibana_host, elasticsearch_hosts):
-    # Путь к шаблону
+    # Path to the template
     template_path = './configs/templates/kibana.yml.j2'
 
     #output_dir = './roles/copy_config_to_kibana/files/'
@@ -66,47 +66,47 @@ def generate_kibana_config(kibana_host, elasticsearch_hosts):
     filename = 'kibana.yaml'
     file_path = os.path.join(output_dir, filename)
     
-    # Создание среды Jinja2
+    # Create Jinja2 environment
     env = Environment(loader=FileSystemLoader(os.path.dirname(template_path)))
     
-    # Загрузка шаблона
+    # Load template
     template = env.get_template(os.path.basename(template_path))
     
-    # Рендерим шаблон с переданными переменными
+    # Render template with passed variables
     config_content = template.render(
         kibana_host=kibana_host,
         elasticsearch_hosts=elasticsearch_hosts
     )
     
-    # Записываем сгенерированный файл
+    # Write generated file
     with open(file_path, 'w') as config_file:
         config_file.write(config_content)
     
-    print(f"Конфигурация Kibana сгенерирована и сохранена в {file_path}.")
+    print(f'Configuration file {filename} has been created successfully.')
 
 def generate_elasticsearch_configs(hosts):
-    # Путь к шаблону
+    # Path to the template
     template_path = './configs/templates/elasticsearch.yml.j2'
     
-    # Создание среды Jinja2
+    # Create Jinja2 environment
     env = Environment(loader=FileSystemLoader(os.path.dirname(template_path)))
     
-    # Загрузка шаблона
+    # Load template
     template = env.get_template(os.path.basename(template_path))
     
-    # Папка для конфигурационных файлов
+    # Directory for configuration files
     output_dir = './roles/copy_config_to_server/files/'
     os.makedirs(output_dir, exist_ok=True)
     os.system(f"rm -rf {output_dir}/*")
 
-    # Формируем группы для шаблона
+    # Form groups for template
     groups = {
         'elasticsearch': [{'host': host, 'ip': ip} for host, ip in hosts.items()],
         'elasticsearch_master': [hosts.get('elasticsearch-master')],
         'elasticsearch_workers': [hosts.get(f'elasticsearch-worker-{i}') for i in range(1, len(hosts) - 1)]
     }
     
-    # Создание конфигурационных файлов
+    # Create configuration files
     for host, ip in hosts.items():
         if host != "kibana":
             config = template.render(
@@ -119,11 +119,11 @@ def generate_elasticsearch_configs(hosts):
             
             file_path = os.path.join(output_dir, filename)
             
-            # Запись конфигурации в файл
+            # Write configuration to file
             with open(file_path, 'w') as f:
                 f.write(config)
             
-            print(f'Конфигурационный файл {filename} успешно создан.')
+            print(f'Configuration file {filename} has been created successfully.')
 
 if __name__ == "__main__":
     machines = get_vagrant_vms()
