@@ -1,0 +1,47 @@
+---
+
+- name: Delete kibana token if exist
+  ansible.builtin.uri:
+    url: "https://{{ ansible_facts['eth1']['ipv4']['address']  }}:9200/_security/service/elastic/kibana/credential/token/kibana_token"
+    method: DELETE
+    return_content: true
+    user: "elastic"
+    password: "{{ elasticsearch_password }}"
+    validate_certs: no
+  ignore_errors: true
+
+- name: Create kibana token
+  ansible.builtin.uri:
+    url: "https://{{ ansible_facts['eth1']['ipv4']['address']  }}:9200/_security/service/elastic/kibana/credential/token/kibana_token"
+    method: POST
+    return_content: true
+    user: "elastic"
+    password: "{{ elasticsearch_password }}"
+    validate_certs: no
+  register: kibana_token
+
+#- name: Manage kibana token
+#  ansible.builtin.uri:
+#    url: "https://{{ ansible_facts['eth1']['ipv4']['address'] }}:9200/_security/service/elastic/kibana/credential/token/kibana_token"
+#    method: "{{ item.method }}"
+#    return_content: "{{ item.return_content }}"
+#    user: "elastic"
+#    password: "{{ elasticsearch_password }}"
+#    validate_certs: no
+#  loop:
+#    - { method: DELETE, return_content: false }
+#    - { method: POST, return_content: true }
+#  register: kibana_token
+
+
+#- name: Debug kibana token content
+#  debug:
+#    var: kibana_token
+
+- name: Parse kibana token JSON
+  set_fact:
+    kibana_token_parsed: "{{ kibana_token.content | from_json }}"
+
+- name: Set kibana enrollment token fact
+  set_fact:
+    kibana_enrollment_token: "{{ kibana_token_parsed.token.value }}"
