@@ -1,4 +1,5 @@
 ---
+# TODO: print password to file in localhosh
 - name: Create Elasticsearch enrollment token
   command: /usr/share/elasticsearch/bin/elasticsearch-reset-password -bs -u elastic
   register: elastic_password
@@ -6,3 +7,20 @@
 - name: Set Elasticsearch password
   set_fact:
     elasticsearch_password: "{{ elastic_password.stdout }}"
+
+- name: Ensure password file exists and is empty
+  ansible.builtin.file:
+    path: ./elasticsearch_password.txt
+    state: touch
+    mode: '0644'
+
+- name: Write Elasticsearch password to file
+  ansible.builtin.copy:
+    dest: ./elasticsearch_password.txt
+    content: "Elastic password for `elastic` user: {{ elasticsearch_password }}"
+    mode: '0600'
+
+- name: save response
+  ansible.builtin.fetch:
+    src: ./elasticsearch_password.txt
+    dest: ./
