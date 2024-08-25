@@ -1,0 +1,24 @@
+server.port: 5601
+server.host: "0.0.0.0"
+server.publicBaseUrl: "http://{{ kibana_host }}:5601/"
+
+elasticsearch.hosts:
+{% for host in elasticsearch_hosts %}
+  - https://{{ host }}:9200
+{% endfor %}
+
+elasticsearch.ssl.verificationMode: none
+
+logging:
+  appenders:
+    file:
+      type: file
+      fileName: /var/log/kibana/kibana.log
+      layout:
+        type: json
+  root:
+    appenders:
+      - default
+      - file
+
+pid.file: /run/kibana/kibana.pid
