@@ -54,6 +54,36 @@ def generate_inventory(machines):
 
     print("inventory.yaml has been generated successfully!")
 
+def generate_kibana_config(kibana_host, elasticsearch_hosts):
+    # Путь к шаблону
+    template_path = './configs/templates/kibana.yml.j2'
+
+    #output_dir = './roles/copy_config_to_kibana/files/'
+    output_dir = './roles/setup_kibana/files/'
+    os.makedirs(output_dir, exist_ok=True)
+    os.system(f"rm -rf {output_dir}/*")
+
+    filename = 'kibana.yaml'
+    file_path = os.path.join(output_dir, filename)
+    
+    # Создание среды Jinja2
+    env = Environment(loader=FileSystemLoader(os.path.dirname(template_path)))
+    
+    # Загрузка шаблона
+    template = env.get_template(os.path.basename(template_path))
+    
+    # Рендерим шаблон с переданными переменными
+    config_content = template.render(
+        kibana_host=kibana_host,
+        elasticsearch_hosts=elasticsearch_hosts
+    )
+    
+    # Записываем сгенерированный файл
+    with open(file_path, 'w') as config_file:
+        config_file.write(config_content)
+    
+    print(f"Конфигурация Kibana сгенерирована и сохранена в {file_path}.")
+
 def generate_elasticsearch_configs(hosts):
     # Путь к шаблону
     template_path = './configs/templates/elasticsearch.yml.j2'
@@ -97,5 +127,8 @@ def generate_elasticsearch_configs(hosts):
 
 if __name__ == "__main__":
     machines = get_vagrant_vms()
+    kibana_host = machines['kibana']
+    elasticsearch_hosts = [value for key, value in machines.items() if 'elasticsearch' in key]
     generate_inventory(machines)
     generate_elasticsearch_configs(machines)
+    generate_kibana_config(kibana_host, elasticsearch_hosts)
