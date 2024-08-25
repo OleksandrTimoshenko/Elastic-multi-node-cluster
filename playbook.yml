@@ -12,6 +12,8 @@
       vars:
         component_to_install: elasticsearch
 
+# ===================================================
+
 - name: configure elasticsearch nodes
   hosts: master
   become: true
@@ -42,6 +44,9 @@
       debug:
         msg: "Elasticsearch password is: {{ elasticsearch_password }}"
 
+
+# ===================================================
+
 - name: configure workers
   hosts: workers
   become: true
@@ -51,6 +56,8 @@
     - role: add_node_to_cluster
     - role: copy_config_to_server
 
+# ==================================================
+
 - name: get available nodes
   hosts: master
   become: true
@@ -58,8 +65,15 @@
 
   roles:
     - role: get_available_nodes
+    - role: create_token_for_kibana
+  tasks:
+    - name: Print Kibana enrollment token
+      debug:
+        msg: "Kibana enrollment token is {{ kibana_enrollment_token }}"
 
-- name: Install kibana
+# ===================================================
+
+- name: configure kibana
   hosts: kibana
   become: true
   gather_facts: true
@@ -68,3 +82,4 @@
     - role:  install_software
       vars:
         component_to_install: kibana
+    - role: setup_kibana
