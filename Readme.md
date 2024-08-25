@@ -7,7 +7,7 @@
 `python ./setup.py`
 
 ## Start ansible provisioning (playbook in progress)
-`ansible-playbook -i inventory.yaml playbook.yml`
+`ansible-playbook -i inventory.yaml playbook.yaml`
 
 ## Delete infrastructure
 `vagrant destroy -f`
