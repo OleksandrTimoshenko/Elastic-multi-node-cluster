@@ -25,4 +25,4 @@
 5. add env variable for vagrant VMs number in Vagrantfile
 6. add Logstash and some log simulator....
 7. add requirements to project
-8. Add Nginx server for Kibana, setup domain using /etc/hosts, add self-sined certificates for access to Kibana (using Nginx)
+8. Add Nginx server for Kibana, setup domain using /etc/hosts
