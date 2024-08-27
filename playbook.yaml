@@ -83,3 +83,4 @@
       vars:
         component_to_install: kibana
     - role: setup_kibana
+    - role: create_certs

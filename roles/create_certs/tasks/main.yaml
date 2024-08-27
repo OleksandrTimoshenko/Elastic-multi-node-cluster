@@ -1,0 +1,23 @@
+---
+- name: Create a directory for SSL certificates
+  file:
+    path: /etc/nginx/ssl/certs/
+    state: directory
+    mode: '0755'
+
+- name: Generate an OpenSSL private key.
+  openssl_privatekey:
+    path: /etc/nginx/ssl/certs/privkey.pem
+
+- name: Generate an OpenSSL CSR.
+  openssl_csr:
+    path: /etc/nginx/ssl/certs/kibana.com.csr
+    privatekey_path: /etc/nginx/ssl/certs/privkey.pem
+    common_name: "kibana.com"
+
+- name: Generate a Self Signed OpenSSL certificate.
+  openssl_certificate:
+    path: /etc/nginx/ssl/certs/fullchain.pem
+    privatekey_path: /etc/nginx/ssl/certs/privkey.pem
+    csr_path: /etc/nginx/ssl/certs/kibana.com.csr
+    provider: selfsigned
