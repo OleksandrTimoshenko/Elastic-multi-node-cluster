@@ -84,6 +84,26 @@ def generate_kibana_config(kibana_host, elasticsearch_hosts):
     
     print(f'Configuration file {filename} has been created successfully.')
 
+def generate_nginx_config(domain):
+    template_loader = FileSystemLoader(searchpath="./configs/templates/")
+    env = Environment(loader=template_loader)
+
+    template = env.get_template('kibana.conf.j2')
+
+    nginx_config = template.render(kibana_domain=domain)
+
+    output_dir = './roles/setup_nginx/files/'
+    os.makedirs(output_dir, exist_ok=True)
+    os.system(f"rm -rf {output_dir}/*")
+    filename = 'kibana.conf'
+
+    file_path = os.path.join(output_dir, filename)
+
+    with open(file_path, 'w') as config_file:
+        config_file.write(nginx_config)
+
+    print(f"Nginx configuration for {domain} generated successfully.")
+
 def generate_elasticsearch_configs(hosts):
     # Path to the template
     template_path = './configs/templates/elasticsearch.yml.j2'
@@ -125,10 +145,38 @@ def generate_elasticsearch_configs(hosts):
             
             print(f'Configuration file {filename} has been created successfully.')
 
+def add_host_to_etc_hosts(ip, hostname):
+    hosts_file = "/etc/hosts"
+    
+    new_entry = f"{ip} {hostname}\n"
+
+    try:
+        with open(hosts_file, 'r') as file:
+            content = file.read()
+            if new_entry.strip() in content:
+                print(f"String {new_entry.strip()} alredy exist in {hosts_file}.")
+                return
+    except FileNotFoundError:
+        print(f"File {hosts_file} doesn`t exist.")
+        return
+
+    try:
+        command = f'echo "{new_entry.strip()}" | sudo tee -a {hosts_file}'
+        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+        if result.returncode == 0:
+            print(f"Host {new_entry.strip()} added to {hosts_file}.")
+        else:
+            print(f"Error while updating {hosts_file}:  {result.stderr}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+
 if __name__ == "__main__":
+    domain = input("Enter the Kibana domain name: ")
     machines = get_vagrant_vms()
     kibana_host = machines['kibana']
     elasticsearch_hosts = [value for key, value in machines.items() if 'elasticsearch' in key]
     generate_inventory(machines)
     generate_elasticsearch_configs(machines)
     generate_kibana_config(kibana_host, elasticsearch_hosts)
+    generate_nginx_config(domain)
+    add_host_to_etc_hosts(machines['kibana'], domain)
