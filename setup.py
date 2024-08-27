@@ -122,8 +122,8 @@ def generate_elasticsearch_configs(hosts):
     # Form groups for template
     groups = {
         'elasticsearch': [{'host': host, 'ip': ip} for host, ip in hosts.items()],
-        'elasticsearch_master': [hosts.get('elasticsearch-master')],
-        'elasticsearch_workers': [hosts.get(f'elasticsearch-worker-{i}') for i in range(1, len(hosts) - 1)]
+        'elasticsearch_master': [{'host': host, 'ip': ip} for host, ip in hosts.items() if 'master' in host],
+        'elasticsearch_data': [{'host': host, 'ip': ip} for host, ip in hosts.items() if 'worker' in host]  # assuming workers are data nodes
     }
     
     # Create configuration files
@@ -136,7 +136,6 @@ def generate_elasticsearch_configs(hosts):
             )
             
             filename = f'{host}.yaml'
-            
             file_path = os.path.join(output_dir, filename)
             
             # Write configuration to file

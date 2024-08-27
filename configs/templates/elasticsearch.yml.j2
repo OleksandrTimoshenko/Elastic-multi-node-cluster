@@ -4,7 +4,7 @@ path.data: /var/lib/elasticsearch
 path.logs: /var/log/elasticsearch
 network.host: {{ ansible_eth1.ipv4.address }}
 network.publish_host: {{ ansible_eth1.ipv4.address }}
-discovery.seed_hosts: [ {% for host in groups['elasticsearch'] %}"{{ host.ip }}:9300"{% if not loop.last %}, {% endif %}{% endfor %} ]
+discovery.seed_hosts: [ {% for host in groups['elasticsearch'] %}"{{ host['ip'] }}:9300"{% if not loop.last %}, {% endif %}{% endfor %} ]
 http.port: 9200
 xpack.security.enabled: true
 xpack.security.enrollment.enabled: true
@@ -16,4 +16,5 @@ xpack.security.transport.ssl:
   verification_mode: certificate
   keystore.path: certs/transport.p12
   truststore.path: certs/transport.p12
-cluster.initial_master_nodes: ["{{ groups['elasticsearch_master'][0] }}"]
+cluster.initial_master_nodes: [{% for master in groups['elasticsearch_master'] %}"{{ master['ip'] }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+node.roles: [ {% if ansible_hostname in groups['elasticsearch_master'] %}"master"{% else %}"data"{% endif %} ]
