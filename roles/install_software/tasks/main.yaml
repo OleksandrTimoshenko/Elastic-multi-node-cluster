@@ -1,35 +1,36 @@
 ---
-  - name: Update APT package index
-    apt:
-      update_cache: yes
+- name: Update APT package index
+  apt:
+    update_cache: yes
 
-  - name: Install required dependencies for {{ component_to_install }}
-    apt:
-      name: apt-transport-https
-      state: present
+- name: Install required dependencies
+  apt:
+    name: apt-transport-https
+    state: present
 
-  - name: Creating apt file for set {{ component_to_install }} version
-    ansible.builtin.file:
-      state: touch
-      path: /etc/apt/sources.list.d/elastic-8.x.list
-      access_time: preserve
-      modification_time: preserve
+- name: Creating apt file for setting Elastic version
+  ansible.builtin.file:
+    state: touch
+    path: /etc/apt/sources.list.d/elastic-8.x.list
+    access_time: preserve
+    modification_time: preserve
 
-  - name: Add an Apt signing key, uses whichever key is at the URL
-    ansible.builtin.apt_key:
-      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-      state: present
+- name: Add an Apt signing key, uses whichever key is at the URL
+  ansible.builtin.apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
 
-  - name: Set {{ component_to_install }} version 8 to apt repository list
-    lineinfile:
-      path: /etc/apt/sources.list.d/elastic-8.x.list
-      line: "deb https://artifacts.elastic.co/packages/8.x/apt stable main"
+- name: Set Elastic version 8 to apt repository list
+  lineinfile:
+    path: /etc/apt/sources.list.d/elastic-8.x.list
+    line: "deb https://artifacts.elastic.co/packages/8.x/apt stable main"
 
-  - name: Update APT package index after adding the {{ component_to_install }} repository
-    apt:
-      update_cache: yes
+- name: Update APT package index after adding the repository
+  apt:
+    update_cache: yes
 
-  - name: Install APT packeges
-    apt:
-      name: 
-        - "{{ component_to_install }}"
+- name: Install APT packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ packages_to_install }}"

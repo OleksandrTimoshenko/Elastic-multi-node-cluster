@@ -10,7 +10,8 @@
   roles:
     - role:  install_software
       vars:
-        component_to_install: elasticsearch
+        packages_to_install: 
+          - elasticsearch
 
 # ===================================================
 
@@ -81,6 +82,8 @@
   roles:
     - role:  install_software
       vars:
-        component_to_install: kibana
+        packages_to_install: 
+          - kibana
+          - nginx
     - role: setup_kibana
     - role: create_certs
