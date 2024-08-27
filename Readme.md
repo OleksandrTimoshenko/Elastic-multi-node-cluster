@@ -3,7 +3,7 @@
 ## Create vagrant VMs
 `vagrant up`
 
-## Create inventory file
+## Create inventory file, generate configs from template, update /etc/hosts
 `python ./setup.py`
 
 ## Start ansible provisioning (playbook in progress)
@@ -13,7 +13,8 @@
 `vagrant destroy -f`
 
 # Go to Kibana
-`http://192.168.56.12:5601/`
+`https://<your_host>/`
+### We are using self-signed sertificates, so browser will decline it
 ### find credentials in `./elasticsearch-master/elasticsearch_password.txt`
 
 ## TODO
