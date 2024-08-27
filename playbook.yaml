@@ -87,3 +87,4 @@
           - nginx
     - role: setup_kibana
     - role: create_certs
+    - role: setup_nginx

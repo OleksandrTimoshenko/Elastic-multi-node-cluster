@@ -1,0 +1,16 @@
+---
+- name: Copy Nginx config
+  ansible.builtin.copy:
+    src: "files/{{ ansible_hostname }}.conf"
+    dest: "/etc/nginx/sites-available/{{ ansible_hostname }}.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload Nginx
+
+- name: Ensure symbolic link for Nginx configuration
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/{{ ansible_hostname }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ ansible_hostname }}.conf"
+    state: link
+  notify: Reload Nginx
