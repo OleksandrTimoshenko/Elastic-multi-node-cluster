@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
   (1..num_masters).each do |i|
     config.vm.define "elasticsearch-master-#{i}" do |master|
       master.vm.box = "bento/ubuntu-22.04"
-      master.vm.hostname = "elasticsearch-worker-#{i}"
+      master.vm.hostname = "elasticsearch-master-#{i}"
       master.vm.network "private_network", ip: "192.168.56.1#{i + 1}"
       master.vm.provider "virtualbox" do |vb|
         vb.memory = "2048"
