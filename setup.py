@@ -121,7 +121,7 @@ def generate_elasticsearch_configs(hosts):
 
     # Form groups for template
     groups = {
-        'elasticsearch': [{'host': host, 'ip': ip} for host, ip in hosts.items()],
+        'elasticsearch': [{'host': host, 'ip': ip} for host, ip in hosts.items() if 'kibana' not in host],
         'elasticsearch_master': [{'host': host, 'ip': ip} for host, ip in hosts.items() if 'master' in host],
         'elasticsearch_data': [{'host': host, 'ip': ip} for host, ip in hosts.items() if 'worker' in host]  # assuming workers are data nodes
     }

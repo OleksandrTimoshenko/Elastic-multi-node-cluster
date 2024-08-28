@@ -17,4 +17,4 @@ xpack.security.transport.ssl:
   keystore.path: certs/transport.p12
   truststore.path: certs/transport.p12
 cluster.initial_master_nodes: [{% for master in groups['elasticsearch_master'] %}"{{ master['ip'] }}"{% if not loop.last %}, {% endif %}{% endfor %}]
-node.roles: [ {% if ansible_hostname in groups['elasticsearch_master'] %}"master"{% else %}"data"{% endif %} ]
+node.roles: [ {% if ansible_hostname in groups['elasticsearch_master'] | map(attribute='host') | list %}"master"{% else %}"data"{% endif %} ]
