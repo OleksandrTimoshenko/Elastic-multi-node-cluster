@@ -4,3 +4,6 @@ inventory.yaml
 roles/copy_config_to_server/files
 roles/*/files
 elasticsearch-master/
+*.p12
+*.zip
+creds
