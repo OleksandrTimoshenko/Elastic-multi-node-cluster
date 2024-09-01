@@ -1,7 +1,7 @@
 - name: Install Elastic
   hosts: [master, workers]
   become: True
-  gather_facts: false
+  gather_facts: true
 
   pre_tasks:
     - name: Wait for system to become reachable
@@ -13,78 +13,17 @@
         packages_to_install: 
           - elasticsearch
 
-# ===================================================
-
-- name: configure elasticsearch nodes
-  hosts: master
-  become: true
+- name: Install kibana
+  hosts: [kibana]
+  become: True
   gather_facts: true
 
-  roles:
-    - copy_config_to_server
-
-  tasks:
-    - name: Flush handlers after copy_config_to_server
-      meta: flush_handlers
-
-    - name: Other tasks after handler has run
-      debug:
-        msg: "Handlers have been triggered, proceeding with other tasks..."
-
-    - include_role:
-        # TODO:update pass in every run is not best idea....
-        name: update_elastic_password
-    - include_role:
-        name: generate_enrollment_token
-
-    - name: Print Elasticsearch enrollment token
-      debug:
-        msg: "Elasticsearch enrollment token is {{ elasticsearch_enrollment_token }}"
-
-    - name: Print Elasticsearch password
-      debug:
-        msg: "Elasticsearch password is: {{ elasticsearch_password }}"
-
-
-# ===================================================
-
-- name: configure workers
-  hosts: workers
-  become: true
-  gather_facts: true
-
-  roles:
-    - role: add_node_to_cluster
-    - role: copy_config_to_server
-
-# ==================================================
-
-- name: get available nodes
-  hosts: master
-  become: true
-  gather_facts: true
-
-  roles:
-    - role: get_available_nodes
-    - role: create_token_for_kibana
-  tasks:
-    - name: Print Kibana enrollment token
-      debug:
-        msg: "Kibana enrollment token is {{ kibana_enrollment_token }}"
-
-# ===================================================
-
-- name: configure kibana
-  hosts: kibana
-  become: true
-  gather_facts: true
-
+  pre_tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+  
   roles:
     - role:  install_software
       vars:
         packages_to_install: 
           - kibana
-          - nginx
-    - role: setup_kibana
-    - role: create_certs
-    - role: setup_nginx
