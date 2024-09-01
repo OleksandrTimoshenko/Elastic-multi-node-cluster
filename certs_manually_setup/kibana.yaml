@@ -1,0 +1,30 @@
+server.port: 5601
+server.host: "0.0.0.0"
+server.publicBaseUrl: "http://192.168.56.21:5601"
+
+#logging.verbose: true
+
+elasticsearch.hosts:
+  - https://192.168.56.12:9200
+  - https://192.168.56.13:9200
+  - https://192.168.56.14:9200
+
+elasticsearch.serviceAccountToken: "<ypur_kibana_token>" 
+#"${elasticsearch.serviceAccountToken}"
+elasticsearch.ssl.certificateAuthorities: /etc/kibana/elasticsearch-ca.pem
+
+elasticsearch.ssl.verificationMode: certificate
+
+logging:
+  appenders:
+    file:
+      type: file
+      fileName: /var/log/kibana/kibana.log
+      layout:
+        type: json
+  root:
+    appenders:
+      - default
+      - file
+
+pid.file: /run/kibana/kibana.pid

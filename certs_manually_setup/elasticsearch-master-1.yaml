@@ -1,0 +1,20 @@
+cluster.name: elastic
+node.name: elasticsearch-master-1
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+network.host: 192.168.56.12
+network.publish_host: 192.168.56.12
+discovery.seed_hosts: [ "192.168.56.12:9300", "192.168.56.13:9300", "192.168.56.14:9300" ]
+http.port: 9200
+cluster.initial_master_nodes: ["192.168.56.12", "192.168.56.13"]
+node.roles: [ "master" ]
+
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate 
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: certs/http.p12
