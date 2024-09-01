@@ -1,12 +1,12 @@
 Vagrant.configure("2") do |config|
-  num_masters = 3
-  num_workers = 3
+  num_masters = 2
+  num_workers = 1
 
   # Kibana node
   config.vm.define "kibana" do |kibana|
     kibana.vm.box = "bento/ubuntu-22.04"
     kibana.vm.hostname = "kibana"
-    kibana.vm.network "private_network", ip: "192.168.56.11"
+    kibana.vm.network "private_network", ip: "192.168.56.21"
     kibana.vm.provider "virtualbox" do |vb|
       vb.memory = "2048"
       vb.cpus = 2
