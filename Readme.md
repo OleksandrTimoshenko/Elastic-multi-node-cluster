@@ -26,8 +26,30 @@
 ### find credentials in `./elasticsearch-master/elasticsearch_password.txt`
 
 ## TODO
-1. think about JVM setup, swap setup, file descriptor limit (see 4-6 [here](https://prabhjot-singh.medium.com/setup-a-multi-node-production-ready-elasticsearch-cluster-8504955f5d10))
-2. update ansoble config for (see script.sh):
-    - prepare node for Elastic (see №1 here)
-3. add env variable for vagrant VMs number in Vagrantfile
-4. add Logstash and some log simulator
+1. add env variable for vagrant VMs number in Vagrantfile
+2. add Logstash and some log simulator
+
+## Elasticsearch JVM setup
+### elastik usually sets the best values based on the node characteristics.
+### but if you know what you're doing...
+1. add `bootstrap.memory_lock: true` to `/etc/elasticsearch/elasticsearch.yml`
+2. create file `/etc/elasticsearch/jvm.options.d/custom.options` (see [this](https://www.elastic.co/guide/en/elasticsearch/reference/8.15/advanced-configuration.html#set-jvm-options) for more info)
+```
+-Xms1g
+-Xmx1g
+```
+3. add `MAX_LOCKED_MEMORY=unlimited` to `/etc/default/elasticsearch`
+4. add this lines to `/etc/security/limits.conf`
+```
+- nofile 65536
+elasticsearch soft memlock unlimited
+elasticsearch hard memlock unlimited
+```
+5. add `session required pam_limits.so` to  `/etc/pam.d/common-session`
+6. Update elasticsearch service settings (add this to file):
+`sudo systemctl edit elasticsearch.service`
+```
+[Service]
+LimitMEMLOCK=infinity
+```
+7. Restart servive `sudo systemctl daemon-reload && sudo systemctl restart elasticsearch`
