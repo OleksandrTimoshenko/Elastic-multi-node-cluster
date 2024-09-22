@@ -145,6 +145,30 @@ def generate_elasticsearch_configs(hosts):
             
             print(f'Configuration file {filename} has been created successfully.')
 
+def generate_filebeat_config(kibana_host, elasticsearch_hosts):
+    template_loader = FileSystemLoader(searchpath="./configs/templates/")
+    env = Environment(loader=template_loader)
+
+    template = env.get_template('filebeat.yml.j2')
+
+    config_content = template.render(
+        elasticsearch_hosts=elasticsearch_hosts,
+        kibana_host=kibana_host
+    )
+
+    filename = 'filebeat.yml'
+    output_dir = './roles/setup_filebeat/files/'
+    os.makedirs(output_dir, exist_ok=True)
+    os.system(f"rm -rf {output_dir}/{filename}")
+
+    file_path = os.path.join(output_dir, filename)
+
+    with open(file_path, 'w') as config_file:
+        config_file.write(config_content)
+
+    print(f"Configuration file {filename} has been created successfully")
+
+
 def add_host_to_etc_hosts(ip, hostname):
     hosts_file = "/etc/hosts"
     
@@ -179,4 +203,5 @@ if __name__ == "__main__":
     generate_elasticsearch_configs(machines)
     generate_kibana_config(kibana_host, elasticsearch_hosts)
     generate_nginx_config(domain)
+    generate_filebeat_config(kibana_host, elasticsearch_hosts)
     add_host_to_etc_hosts(machines['kibana'], domain)
