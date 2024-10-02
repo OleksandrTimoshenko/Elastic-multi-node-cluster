@@ -1,7 +1,14 @@
 import subprocess
 import yaml
 import os
+import sys
 from jinja2 import Environment, FileSystemLoader
+
+def get_kibana_domain():
+    if len(sys.argv) > 1:
+        return sys.argv[1]
+    else:
+        return input("Enter the Kibana domain name: ")
 
 def get_vagrant_vms():
     result = subprocess.run(['vagrant', 'status'], capture_output=True, text=True)
@@ -153,7 +160,8 @@ def generate_filebeat_config(kibana_host, elasticsearch_hosts):
 
     config_content = template.render(
         elasticsearch_hosts=elasticsearch_hosts,
-        kibana_host=kibana_host
+        kibana_host=kibana_host,
+        elasticsearch_password = "{{ hostvars['elasticsearch-master']['elasticsearch_password'] }}"
     )
 
     filename = 'filebeat.yml'
@@ -162,7 +170,6 @@ def generate_filebeat_config(kibana_host, elasticsearch_hosts):
     os.system(f"rm -rf {output_dir}/{filename}")
 
     file_path = os.path.join(output_dir, filename)
-
     with open(file_path, 'w') as config_file:
         config_file.write(config_content)
 
@@ -195,7 +202,7 @@ def add_host_to_etc_hosts(ip, hostname):
         print(f"Error: {e}")
 
 if __name__ == "__main__":
-    domain = input("Enter the Kibana domain name: ")
+    domain = get_kibana_domain()
     machines = get_vagrant_vms()
     kibana_host = machines['kibana']
     elasticsearch_hosts = [value for key, value in machines.items() if 'elasticsearch' in key]
