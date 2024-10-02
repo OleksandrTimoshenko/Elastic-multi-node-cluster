@@ -5,7 +5,9 @@ VAGRANT_DESTROY = vagrant destroy -f
 # Python setup script and domain input
 PYTHON_SETUP = /usr/bin/python3 ./setup.py
 PIP_REQUIREMENTS = pip3 install -r ./requirements.txt
+
 DOMAIN ?= kibana.com
+NUM_WORKERS ?= 3
 
 # Ansible playbook
 ANSIBLE_PLAYBOOK = ansible-playbook -i inventory.yaml playbook.yaml
@@ -18,7 +20,7 @@ pip:
 	${PIP_REQUIREMENTS}
 
 vagrant_up:
-	$(VAGRANT_UP)
+	NUM_WORKERS=$(NUM_WORKERS) vagrant up
 
 # Run Python setup script with domain argument
 setup:
@@ -39,10 +41,12 @@ all: vagrant_up setup ansible
 help:
 	@echo "Available targets:"
 	@echo "  pip            - Install python dependencies"
-	@echo "  vagrant_up     - Bring up the Vagrant machines"
+	@echo "  vagrant_up     - Bring up the Vagrant machines (use NUM_WORKERS=<int> to specify number of elasticsearch workers)"
 	@echo "  setup          - Run Python setup script (use DOMAIN=<domain> to specify domain)"
 	@echo "  ansible        - Run Ansible playbook"
-	@echo "  all            - Run Vagrant up, Python setup, and Ansible playbook in sequence (use DOMAIN=<domain> to specify domain)"
+	@echo "  all            - Run Vagrant up, Python setup, and Ansible playbook in sequence"
 	@echo "  destroy        - Destroy Vagrant machines"
+	@echo
+	@echo "  example:       make all DOMAIN=kibana.com NUM_WORKERS=3"
 
 .PHONY: pip vagrant_up setup ansible destroy all help

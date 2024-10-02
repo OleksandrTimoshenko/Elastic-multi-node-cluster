@@ -15,7 +15,7 @@
 `pip3 install -r ./requirements.txt`
 
 ## Create vagrant VMs
-`vagrant up`
+`NUM_WORKERS=3 vagrant up`
 
 ## Create inventory file, generate configs from template, update /etc/hosts
 `python ./setup.py`
@@ -40,9 +40,6 @@ Create data streams
     - kibana
 Import dashboards from ./kibana_dashboards folder
 ```
-
-## TODO
-1. add env variable for vagrant VMs number in Vagrantfile
 
 ## Elasticsearch JVM setup
 ### elastik usually sets the best values based on the node characteristics.
