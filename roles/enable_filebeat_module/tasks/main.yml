@@ -1,0 +1,28 @@
+---
+- name: Enable Filebeat module {{ item }}
+  ansible.builtin.command:
+    cmd: sudo filebeat modules enable {{ item }}
+  with_items: "{{ modules_to_install }}"
+
+- name: Remove old module config {{ item }}
+  ansible.builtin.file:
+    path: /etc/filebeat/modules.d/{{ item }}.yml
+    state: absent
+  with_items: "{{ modules_to_install }}"
+
+- name: Copy new module config {{ item }}
+  ansible.builtin.copy:
+    src: "{{ item }}.yml"
+    dest: /etc/filebeat/modules.d/{{ item }}.yml
+    owner: root
+    group: root
+    mode: '0644'
+  with_items: "{{ modules_to_install }}"
+  notify:
+    - Reload Filebeat service
+
+- name: Reload Filebeat service
+  ansible.builtin.systemd:
+    name: filebeat
+    daemon_reload: true
+    state: restarted

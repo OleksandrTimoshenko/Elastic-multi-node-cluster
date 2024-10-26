@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-  num_workers = 3
+  num_workers = ENV.fetch("NUM_WORKERS", 3).to_i
 
   config.vm.define "elasticsearch-master" do |master|
     master.vm.box = "bento/ubuntu-22.04"

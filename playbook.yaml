@@ -88,3 +88,44 @@
     - role: setup_kibana
     - role: create_certs
     - role: setup_nginx
+
+# =====================================================
+
+- name: install filebeat
+  hosts: all
+  become: true
+  gather_facts: true
+
+  roles:
+    - role:  install_software
+      vars:
+        packages_to_install: 
+          - filebeat
+    - role: setup_filebeat
+
+# =====================================================
+
+- name: enable elasticsearch filebeat module
+  hosts: [master, workers]
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: enable_filebeat_module
+      vars:
+        modules_to_install:
+          - elasticsearch
+
+# =====================================================
+
+- name: enable kibana and nginx filebeat modules
+  hosts: kibana
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: enable_filebeat_module
+      vars:
+        modules_to_install:
+          - kibana
+          - nginx

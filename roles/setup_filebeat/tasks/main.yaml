@@ -1,0 +1,8 @@
+---
+- name: Copy Filebeat config file with replaced password
+  ansible.builtin.template:
+    src: "files/filebeat.yml"
+    dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: '0600'

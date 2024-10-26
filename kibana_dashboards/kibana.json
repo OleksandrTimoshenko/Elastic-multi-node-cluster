@@ -1,0 +1,65 @@
+{
+  "version": "8.15.2",
+  "objects": [
+    {
+      "id": "5d3a48ed-02a9-42f4-a8ec-7c61420314a3",
+      "type": "dashboard",
+      "namespaces": [
+        "default"
+      ],
+      "updated_at": "2024-10-02T18:02:45.473Z",
+      "created_at": "2024-10-02T18:02:45.473Z",
+      "created_by": "u_mGBROF_q5bmFCATbLXAcCwKa0k8JvONAwSruelyKA5E_0",
+      "updated_by": "u_mGBROF_q5bmFCATbLXAcCwKa0k8JvONAwSruelyKA5E_0",
+      "version": "WzE1NSwxXQ==",
+      "attributes": {
+        "version": 2,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+        },
+        "description": "",
+        "timeRestore": false,
+        "optionsJSON": "{\"useMargins\":true,\"syncColors\":false,\"syncCursor\":true,\"syncTooltips\":false,\"hidePanelTitles\":false}",
+        "panelsJSON": "[{\"type\":\"lens\",\"gridData\":{\"x\":0,\"y\":0,\"w\":24,\"h\":15,\"i\":\"3ce7081e-9e9a-40f0-b9b4-87020ac81622\"},\"panelIndex\":\"3ce7081e-9e9a-40f0-b9b4-87020ac81622\",\"embeddableConfig\":{\"attributes\":{\"title\":\"\",\"visualizationType\":\"lnsXY\",\"type\":\"lens\",\"references\":[{\"type\":\"index-pattern\",\"id\":\"0547923b-6793-43a4-98e0-335e8a8b2bbc\",\"name\":\"indexpattern-datasource-layer-f60ce77a-9000-43c8-8245-b3f95054157d\"}],\"state\":{\"visualization\":{\"legend\":{\"isVisible\":true,\"position\":\"right\"},\"valueLabels\":\"hide\",\"fittingFunction\":\"None\",\"axisTitlesVisibilitySettings\":{\"x\":true,\"yLeft\":true,\"yRight\":true},\"tickLabelsVisibilitySettings\":{\"x\":true,\"yLeft\":true,\"yRight\":true},\"labelsOrientation\":{\"x\":0,\"yLeft\":0,\"yRight\":0},\"gridlinesVisibilitySettings\":{\"x\":true,\"yLeft\":true,\"yRight\":true},\"preferredSeriesType\":\"bar_stacked\",\"layers\":[{\"layerId\":\"f60ce77a-9000-43c8-8245-b3f95054157d\",\"accessors\":[\"3feeb8e6-02c6-4774-b66a-a4ca63b0268d\"],\"position\":\"top\",\"seriesType\":\"bar_stacked\",\"showGridlines\":false,\"layerType\":\"data\",\"colorMapping\":{\"assignments\":[],\"specialAssignments\":[{\"rule\":{\"type\":\"other\"},\"color\":{\"type\":\"loop\"},\"touched\":false}],\"paletteId\":\"eui_amsterdam_color_blind\",\"colorMode\":{\"type\":\"categorical\"}},\"xAccessor\":\"c905f117-3dc0-42ce-b050-f38ee968766f\"}]},\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filters\":[],\"datasourceStates\":{\"formBased\":{\"layers\":{\"f60ce77a-9000-43c8-8245-b3f95054157d\":{\"columns\":{\"c905f117-3dc0-42ce-b050-f38ee968766f\":{\"label\":\"event.created\",\"dataType\":\"date\",\"operationType\":\"date_histogram\",\"sourceField\":\"event.created\",\"isBucketed\":true,\"scale\":\"interval\",\"params\":{\"interval\":\"auto\",\"includeEmptyRows\":true,\"dropPartials\":false}},\"3feeb8e6-02c6-4774-b66a-a4ca63b0268d\":{\"label\":\"Count of records\",\"dataType\":\"number\",\"operationType\":\"count\",\"isBucketed\":false,\"scale\":\"ratio\",\"sourceField\":\"___records___\",\"params\":{\"emptyAsNull\":true}}},\"columnOrder\":[\"c905f117-3dc0-42ce-b050-f38ee968766f\",\"3feeb8e6-02c6-4774-b66a-a4ca63b0268d\"],\"incompleteColumns\":{},\"sampling\":1}}},\"indexpattern\":{\"layers\":{}},\"textBased\":{\"layers\":{}}},\"internalReferences\":[],\"adHocDataViews\":{}}},\"enhancements\":{}},\"title\":\"\"}]",
+        "title": "KIbana"
+      },
+      "references": [
+        {
+          "type": "index-pattern",
+          "id": "0547923b-6793-43a4-98e0-335e8a8b2bbc",
+          "name": "3ce7081e-9e9a-40f0-b9b4-87020ac81622:indexpattern-datasource-layer-f60ce77a-9000-43c8-8245-b3f95054157d"
+        }
+      ],
+      "managed": false,
+      "coreMigrationVersion": "8.8.0",
+      "typeMigrationVersion": "10.2.0"
+    },
+    {
+      "id": "0547923b-6793-43a4-98e0-335e8a8b2bbc",
+      "type": "index-pattern",
+      "namespaces": [
+        "default"
+      ],
+      "updated_at": "2024-10-02T17:30:08.318Z",
+      "created_at": "2024-10-02T17:30:08.318Z",
+      "created_by": "u_mGBROF_q5bmFCATbLXAcCwKa0k8JvONAwSruelyKA5E_0",
+      "updated_by": "u_mGBROF_q5bmFCATbLXAcCwKa0k8JvONAwSruelyKA5E_0",
+      "version": "WzE4LDFd",
+      "attributes": {
+        "fieldAttrs": "{}",
+        "title": "filebeat-8.15.2-kibana",
+        "timeFieldName": "@timestamp",
+        "sourceFilters": "[]",
+        "fields": "[]",
+        "fieldFormatMap": "{}",
+        "runtimeFieldMap": "{}",
+        "name": "kibana",
+        "allowHidden": false
+      },
+      "references": [],
+      "managed": false,
+      "coreMigrationVersion": "8.8.0",
+      "typeMigrationVersion": "8.0.0"
+    }
+  ]
+}

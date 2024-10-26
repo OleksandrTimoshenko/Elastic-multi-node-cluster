@@ -3,4 +3,5 @@ legacy
 inventory.yaml
 roles/copy_config_to_server/files
 roles/*/files
+!roles/enable_filebeat_module/files/
 elasticsearch-master/

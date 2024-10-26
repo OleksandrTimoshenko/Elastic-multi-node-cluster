@@ -1,0 +1,6 @@
+---
+- name: Reload Filebeat service
+  ansible.builtin.systemd:
+    name: filebeat
+    daemon_reload: true
+    state: restarted

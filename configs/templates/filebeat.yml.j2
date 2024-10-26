@@ -1,0 +1,19 @@
+filebeat.config.modules:
+  path: {{ path_config_modules | default("${path.config}/modules.d/*.yml") }}
+  reload.enabled: {{ reload_enabled | default(false) }}
+
+output.elasticsearch:
+  hosts:
+    {% for host in elasticsearch_hosts %}
+    - https://{{ host }}:9200
+    {% endfor %}
+  username: "{{ elasticsearch_username | default('elastic') }}"
+  password: "{{ elasticsearch_password }}"
+  indices:
+    - index: "filebeat-%{[agent.version]}-%{[event.module]}"
+  ssl.verification_mode: "{{ ssl_verification_mode | default('none') }}"
+
+setup.kibana:
+  host: "http://{{ kibana_host | default('http://192.168.56.12:5601') }}:5601"
+  ssl.enabled: {{ kibana_ssl_enabled | default(false) }}
+  ssl.verification_mode: "{{ kibana_ssl_verification_mode | default('none') }}"
